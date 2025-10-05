@@ -27,7 +27,7 @@ jobs:
       - name: Build website
         run: npm run build
       - name: Publish JS filename
-        run: find dist/assets/*.js -type f -execdir echo '{}' ';'
+        run: compgen -G "dist/assets/*.js" > /dev/null && find dist/assets/*.js -type f -execdir echo '{}' ';' || echo "No JS files found in dist/assets"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
