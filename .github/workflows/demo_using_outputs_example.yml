@@ -56,7 +56,7 @@ jobs:
         run: ls
         #Using outputs
       - name: Outputs JS filename
-        run: echo "{{ needs.build.outputs.smth-file }}" 
+        run: echo "${{ needs.build.outputs.script-file }}" 
         #Using outputs
       - name: Deploy
         run: echo "Deploying..."
