@@ -1,4 +1,4 @@
-name: Deploy website
+name: Upload artifact
 on:
   push:
     branches:

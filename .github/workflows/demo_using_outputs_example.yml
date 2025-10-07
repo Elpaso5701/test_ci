@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     #Using outputs
     outputs:
-      script-file: $ {{ steps.publish.outputs.smth-file }}
+      script-file: ${{ steps.publish.outputs.smth-file }}
     #Using outputs  
     steps: 
       - name: Get code
