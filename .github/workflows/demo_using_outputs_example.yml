@@ -19,15 +19,22 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-    steps:
+    #Using outputs
+    outputs:
+      script-file: $ {{ steps.publish.outputs.smth-file }}
+    #Using outputs  
+    steps: 
       - name: Get code
         uses: actions/checkout@v5
       - name: Install dependencies
         run: npm ci
       - name: Build website
         run: npm run build
+        #Using outputs
       - name: Publish JS filename
-        run: compgen -G "dist/assets/*.js" > /dev/null && find dist/assets/*.js -type f -execdir echo '{}' ';' || echo "No JS files found in dist/assets"
+        id: publish
+        run: compgen -G "dist/assets/*.js" > /dev/null && find dist/assets/*.js -type f -execdir echo 'smth-file={}' >> $GITHUB_OUTPUT ';' || echo "No JS files found in dist/assets"
+        #Using outputs
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -47,5 +54,9 @@ jobs:
           name: dist-files
       - name: Output contects
         run: ls
+        #Using outputs
+      - name: Outputs JS filename
+        run: echo "{{ needs.build.outputs.smth-file }}" 
+        #Using outputs
       - name: Deploy
         run: echo "Deploying..."
