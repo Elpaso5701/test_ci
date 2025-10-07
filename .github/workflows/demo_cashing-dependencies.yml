@@ -1,0 +1,69 @@
+name: Cashing-dependencies
+on:
+  push:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v5
+        # Cashe #Сохраняет кэш зависимостей (папку node_modules и кэш npm) для ускорения шага npm ci
+      - name: Cashe Dependencies
+        uses: actions/cache@v4
+        with: 
+          path: ~/.npm                                                      # Указывает, что кэшируется папка ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+        # Cashe  
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint code
+        run: npm run lint
+      - name: Test code
+        run: npm run test
+        
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    #Using outputs
+    outputs:
+      script-file: ${{ steps.publish.outputs.smth-file }}
+    #Using outputs  
+    steps: 
+      - name: Get code
+        uses: actions/checkout@v5
+      - name: Install dependencies
+        run: npm ci
+      - name: Build website
+        run: npm run build
+        #Using outputs
+      - name: Publish JS filename
+        id: publish
+        run: compgen -G "dist/assets/*.js" > /dev/null && find dist/assets/*.js -type f -execdir echo 'smth-file={}' >> $GITHUB_OUTPUT ';' || echo "No JS files found in dist/assets"
+        #Using outputs
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          path: dist
+          # path: |
+          #   dist
+          #   package.json
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-files
+      - name: Output contects
+        run: ls
+        #Using outputs
+      - name: Outputs JS filename
+        run: echo "${{ needs.build.outputs.script-file }}" 
+        #Using outputs
+      - name: Deploy
+        run: echo "Deploying..."
