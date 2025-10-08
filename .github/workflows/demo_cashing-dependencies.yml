@@ -9,13 +9,13 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v5
-      #   # Cashe #Сохраняет кэш зависимостей (папку node_modules и кэш npm) для ускорения шага npm ci
-      # - name: Cashe Dependencies
-      #   uses: actions/cache@v4
-      #   with: 
-      #     path: ~/.npm                                                      # Указывает, что кэшируется папка ~/.npm
-      #     key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-      #   # Cashe  
+        # Cashe #Сохраняет кэш зависимостей (папку node_modules и кэш npm) для ускорения шага npm ci
+      - name: Cashe Dependencies
+        uses: actions/cache@v4
+        with: 
+          path: ~/.npm                                                      # Указывает, что кэшируется папка ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+        # Cashe  
       - name: Install dependencies
         run: npm ci
       - name: Lint code
@@ -33,13 +33,13 @@ jobs:
     steps: 
       - name: Get code
         uses: actions/checkout@v5
-      #   #Used same cache as a test job  
-      # - name: Cashe Dependencies
-      #   uses: actions/cache@v4
-      #   with: 
-      #     path: ~/.npm                                                      # Указывает, что кэшируется папка ~/.npm
-      #     key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}  
-      #   # Cache  
+        #Used same cache as a test job  
+      - name: Cashe Dependencies
+        uses: actions/cache@v4
+        with: 
+          path: ~/.npm                                                      # Указывает, что кэшируется папка ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}  
+        # Cache  
       - name: Install dependencies
         run: npm ci
       - name: Build website
